@@ -1,5 +1,5 @@
 # gokraken [![GoDoc](https://godoc.org/github.com/yaustn/gokraken?status.svg)](https://pkg.go.dev/github.com/yaustn/gokraken) [![Go Report Card](https://goreportcard.com/badge/github.com/yaustn/gokraken)](https://goreportcard.com/report/github.com/yaustn/gokraken)
-A lightweight Golang implementation of the ![Kraken REST API specification](https://www.kraken.com/en-us/features/api).
+A lightweight Golang package implementing [Kraken's REST API specification](https://www.kraken.com/en-us/features/api).
 
 ## Usage
 
