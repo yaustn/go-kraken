@@ -18,19 +18,24 @@ type OrderDescription struct {
 	CloseCondition string  `json:"close"`
 }
 
-// AddOrderResponse - response on AddOrder request
 type AddOrderResponse struct {
 	Description    OrderDescription `json:"descr"`
 	TransactionIds []string         `json:"txid"`
 }
 
-func (kc *KrakenClient) AddOrder(pair string, side string, orderType string, volume float64, args map[string]interface{}) (AddOrderResponse, error) {
+type CancelResponse struct {
+	Count   int64 `json:"count"`
+	Pending bool  `json:"pending,omitempty"`
+}
+
+func (kc *KrakenClient) AddOrder(pair string, side string, orderType string, volume float64, args map[string]interface{}) (*AddOrderResponse, error) {
 	data := url.Values{
 		"pair":      {pair},
-		"volume":    {strconv.FormatFloat(volume, 'f', 8, 64)},
 		"type":      {side},
 		"ordertype": {orderType},
+		"volume":    {strconv.FormatFloat(volume, 'f', 8, 64)},
 	}
+
 	for key, value := range args {
 		switch v := value.(type) {
 		case string:
@@ -47,8 +52,23 @@ func (kc *KrakenClient) AddOrder(pair string, side string, orderType string, vol
 	}
 
 	response := AddOrderResponse{}
-	if err := kc.request("AddOrder", true, data, &response); err != nil {
-		return response, err
+	err := kc.request("AddOrder", true, data, &response)
+	if err != nil {
+		return &response, err
 	}
-	return response, nil
+	return &response, nil
+}
+
+func (kc *KrakenClient) CancelOrder(orderID string) (*CancelResponse, error) {
+	data := url.Values{
+		"txid": {orderID},
+	}
+
+	response := CancelResponse{}
+	err := kc.request("CancelOrder", true, data, &response)
+	if err != nil {
+		return &response, err
+	}
+
+	return &response, nil
 }
